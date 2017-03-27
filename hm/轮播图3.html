@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>JS图片自动和可控的轮播切换特效 - 何问起 HoverTree</title>
+		<base target="_blank" />
+		<link rel="stylesheet" type="text/css" href="http://hovertree.com/texiao/js/1/css/style.css">
+		<script type="text/javascript" src="http://hovertree.com/texiao/js/1/js/koala.min.1.5.js"></script>
+		<script type="text/javascript">
+			Qfast.add('widgets', { path: "http://hovertree.com/texiao/js/1/js/terminator2.2.min.js", type: "js", requires: ['fx'] });
+			Qfast(false, 'widgets', function() {
+				K.tabs({
+					id: 'decoroll2', //焦点图包裹id
+					conId: "decoimg_a2", //大图域包裹id
+					tabId: "deconum2", //小圆点数字提示id
+					tabTn: "a",
+					conCn: '.decoimg_b2', //大图域配置class
+					auto: 1, //自动播放 1或0
+					effect: 'fade', //效果配置
+					eType: 'mouseover', // 鼠标事件
+					pageBt: true, //是否有按钮切换页码
+					bns: ['.prev', '.next'], //前后按钮配置class
+					interval: 3000 // 停顿时间
+				})
+			})
+		</script>
+	</head>
+
+	<body>
+		<div>
+			<a href="http://hovertree.com">首页</a>
+			<a href="http://hovertree.com/hvtart/bjae/f03e85410878db53.htm">原文</a>
+			<a href="http://hovertree.com/texiao/">特效库</a>
+		</div>
+		<div id="decoroll2" class="imgfocus">
+			<div id="decoimg_a2" class="imgbox">
+				<div class="decoimg_b2">
+					<a href="http://hovertree.com/hvtart/bjae/f03e85410878db53.htm">
+						<img src="http://hovertree.com/texiao/js/1/img/1.jpg">
+					</a>
+				</div>
+				<div class="decoimg_b2">
+					<a href="http://keleyi.com/">
+						<img src="http://hovertree.com/texiao/js/1/img/2.jpg">
+					</a>
+				</div>
+				<div class="decoimg_b2">
+					<a href="http://hovertree.com/shortanswer/">
+						<img src="http://hovertree.com/texiao/js/1/img/3.jpg">
+					</a>
+				</div>
+				<div class="decoimg_b2">
+					<a href="http://hovertree.com/guestbook/">
+						<img src="http://hovertree.com/texiao/js/1/img/4.jpg">
+					</a>
+				</div>
+			</div>
+			<ul id="deconum2" class="num_a2">
+				<li>
+					<a href="javascript:void(0)" hidefocus="true" target="_self">杨幂</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)" hidefocus="true" target="_self">范冰冰</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)" hidefocus="true" target="_self">高圆圆</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)" hidefocus="true" target="_self">刘诗诗</a>
+				</li>
+			</ul>
+		</div>
+		<br />
+	</body>
+
+</html>
