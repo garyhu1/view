@@ -2,39 +2,30 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>自定义轮播图</title>
+		<title>我的轮播图</title>
 		<style type="text/css">
-			body,
-			ul,
-			li,
-			p{
+			*{
 				margin: 0;
 				padding: 0;
 			}
-			
 			ul{
 				list-style: none;
 			}
-			
-			
-			body {
-				font-family: "Times New Roman", Times, serif;
-			} 
-			
-			#box{
-				width: 492px;
-				height: 172px;
-				margin: 30px auto;
+			#box {
+				width: 490px;
+				height: 170px;
+				margin: 40px auto;
+				border: 1px solid black;
+				overflow: hidden;
+				border-radius: 15px;
 				position: relative;
 			}
-			
 			#box .imglist{
 				width: 490px;
 				height: 170px;
 				position: relative;
 				overflow: hidden;
 			}
-			
 			#box .imglist li{
 				width: 490px;
 				height: 170px;
@@ -42,29 +33,27 @@
 				top: 0;
 				left: 0;
 			}
-			
 			#box .numlist{
 				position: absolute;
 				right: 0;
 				bottom: 5px;
 			}
-			
 			#box .numlist li{
-				width: 20px;
-				height: 20px;
+				width: 30px;
+				height: 30px;
+				line-height: 30px;
 				border-radius: 50%;
-				background: hotpink;
+				cursor: pointer;
+				text-align: center;
+				color: #FFFFFF;
+				margin-right: 5px;
+				background: lightcoral;
 				float: left;
 				opacity: .7;
 				filter: alpha(opacity=70);
-				margin-right: 5px;
-				text-align: center;
-				color: #fff;
-				cursor: pointer;
 			}
-			
 			#box .numlist li.current{
-				background: red;
+				background: darkmagenta;
 				font-weight: bold;
 				opacity: 1;
 				filter: alpha(opacity=100);
@@ -75,25 +64,24 @@
 		<div id="box"></div>
 	</body>
 	<script type="text/javascript">
-		function runImg (){}
+		function runImg(){}
 		runImg.prototype = {
-			count: 0,//图片个数
-			imgurl: [],//图片资源
-			bigbox: null,//父容器
-			boxul: null,//装ul的容器
-			imglist: null,//装图片的容器
-			numlist: null,//装数字的容器
-			prov: 0,//之前显示
-			index: 0,//当前显示
-			timer: null,//控制图片的转变
-			play: null,//控制自动播放
-			//根据id找到节点，或者根据tag创建节点
+			count: 0,
+			imgurl: [],
+			play: null,
+			timer: null,
+			index: 0,
+			prov: 0,
+			bigbox: null,
+			boxul: null,
+			imglist: null,
+			numlist: null,
 			$: function(id) {
-				if(typeof(id) == "string"){
+				if(typeof(id)=="string"){
 					if(id.indexOf("#")>=0){
 						id = id.replace("#","");
 						if(document.getElementById(id)){
-							return document.getElementById(id);
+							return document.getElementById(id)
 						}else{
 							alert("没有容器");
 							return null;
@@ -105,16 +93,14 @@
 					return id;
 				}
 			},
-			//初始化
 			info: function(id) {
 				this.count = this.count<=5?this.count:5;
 				this.bigbox = this.$(id);
-				//创建两个ul
 				for(var i = 0;i < 2;i++){
 					var ul = this.$("ul");
 					for(var j = 0;j < this.count;j++){
 						var li = this.$("li");
-						li.innerHTML = i == 0?this.imgurl[j]:(j+1);
+						li.innerHTML = i ==0?this.imgurl[j]:(j+1);
 						ul.appendChild(li);
 					}
 					this.bigbox.appendChild(ul);
@@ -130,29 +116,55 @@
 				this.alpha(0,100);
 				this.numlist[0].className = "current";
 			},
-			//设置透明度
 			alpha: function(a,b){
 				this.imglist[a].style.opacity = b/100;
 				this.imglist[a].style.filter = "alpha(opacity="+b+")";
 			},
-			//执行轮播任务
-			action: function(id) {
-				this.autoplay(this.index);
+			action: function() {
+				this.autoplay();
 				this.mouseoverout(this.bigbox,this.numlist);
 			},
-			//自动播放
-			autoplay: function(ind) {
+			autoplay: function (ind){
 				var that = this;
 				this.play = setInterval(function() {
 					that.prov = that.index;
-					that.index++
+					that.index++;
 					if(that.index>that.imglist.length-1){
-						that.index=0;
+						that.index = 0;
 					}
-					that.imgshow(that.index,that.imglist,that.numlist);
+					that.imgshow(that.index,that.numlist,that.imglist);
 				},2000);
 			},
-			//鼠标事件
+			imgshow: function(ind,numlist,imglist) {
+				var pro = 100;
+				var cur = 0;
+				this.index = ind;
+				clearInterval(this.timer);
+				for(var i = 0;i < imglist.length;i++){
+					this.alpha(i,0);
+				}
+				this.alpha(this.prov,pro);
+				this.alpha(this.index,cur);
+				for(var j = 0;j < numlist.length;j++){
+					numlist[j].className = "";
+				}
+				numlist[this.index].className = "current";
+				var that = this;
+				this.timer = setInterval(function() {
+					pro -=2;
+					cur +=2;
+					if(pro<0){
+						pro=0;
+					}
+					if(cur>100){
+						cur=100;}
+					that.alpha(that.prov,pro);
+					that.alpha(that.index,cur);
+					if(pro==0&&cur==100){
+						clearInterval(that.timer);
+					}
+				},20);
+			},
 			mouseoverout: function(box,numlist) {
 				var that = this;
 				box.onmouseover = function() {
@@ -161,46 +173,15 @@
 				box.onmouseout = function() {
 					that.autoplay(that.index);
 				}
-				for(var i =0;i < numlist.length;i++){
+				
+				for(var i = 0;i < numlist.length;i++){
 					numlist[i].index = i;
 					numlist[i].onmouseover = function() {
 						that.prov = that.index;
-						that.imgshow(this.index,that.imglist,that.numlist);
+						that.imgshow(this.index,that.numlist,that.imglist);
 					}
 				}
-			},
-		    //图片的切换
-		    imgshow: function(ind,imglist,numlist) {
-		    	var pro = 100;
-		    	var cur = 0;
-		    	var that = this;
-		    	this.index = ind;
-		    	for(var i = 0;i < numlist.length;i++){
-		    		numlist[i].className = "";
-		    	}
-		    	numlist[this.index].className = "current";
-		    	clearInterval(this.timer);
-		    	for(var j = 0;j < imglist.length;j++){
-		    		this.alpha(j,0);
-		    	}
-		    	this.alpha(this.prov,100);
-		    	this.alpha(this.index,0);
-		    	this.timer = setInterval(function() {
-		    		pro -=2;
-		    		cur +=2;
-		    		if(pro<0){
-		    			pro=0;
-		    		}
-		    		if(cur>100){
-		    			cur=100;
-		    		}
-		    		that.alpha(that.prov,pro);
-		    		that.alpha(that.index,cur);
-		    		if(pro==0&&cur==100){
-		    			clearInterval(that.timer);
-		    		}
-		    	},20);
-		    }
+			}
 			
 		}
 		window.onload = function() {
@@ -214,7 +195,7 @@
 				"<img src=\"http://img03.taobaocdn.com/tps/i3/T1ITuTXbRnXXXXXXXX-490-170.png\"/>"
 			];
 			runimg.info("#box");
-			runimg.action("#box");
+			runimg.action();
 		}
 	</script>
 </html>

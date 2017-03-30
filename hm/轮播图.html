@@ -1,45 +1,138 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="utf-8" />
 		<title>轮播图</title>
 		<style type="text/css">
-			*{
+			* {
 				margin: 0;
 				padding: 0;
 			}
-			body html{
+			
+			body html {
 				width: 100%;
 			}
-			.imgs{
+			
+			.imgs {
 				width: 800px;
 				height: 900px;
 				overflow: hidden;
+				position: relative;
 				margin: auto 0;
+				border: 1px solid black;
 			}
-			.img-div{
-				float: left;
+			
+			.imgs div {
+				width: 800px;
+				height: 900px;
+				position: absolute;
+				left: 800px;
 			}
-			.imgs img{
+			
+			.imgs div.img-div {
+				left: 0;
+			}
+			
+			.imgs img {
 				width: 800px;
 				height: 900px;
 			}
 		</style>
 	</head>
+
 	<body>
 		<div class="imgs" id="my_imgs">
-			<div id="img1" class="img-div">
-				<img src="../img/img3.jpg"/>
+			<div>
+				<img src="../img/img3.jpg" />
 			</div>
-			<div id="img2" class="img-div">
+			<div>
 				<img src="../img/img5.jpg" />
 			</div>
-			<div id="img3" class="img-div">
+			<div>
 				<img src="../img/img6.jpg" />
 			</div>
-			<div id="img4" class="img-div">
+			<div>
 				<img src="../img/img7.jpg" />
+			</div>
+			<div>
+				<img src="../img/img1.jpg" />
+			</div>
+			<div>
+				<img src="../img/img8.jpg" />
 			</div>
 		</div>
 	</body>
+	<script type="text/javascript">
+		var index = 0;
+		var prov=0;
+		var imgs = document.getElementById("my_imgs");
+		var imglist = imgs.getElementsByTagName("div");
+		imglist[0].className = "img-div";
+		var that = window;
+		setInterval(function() {
+			for(var i = 0;i < imglist.length;i++){
+				imglist[i].style["left"] = "800px";
+			}
+			prov = index;
+//			console.log(that.prov);
+			imglist[prov].style["left"] = "0px";
+			index++;
+			if(index>imglist.length-1){
+				index = 0;
+			}
+			move(imglist[prov],{left: -800})
+			move(imglist[index],{left: 0})
+		},2000);
+		//多参数运动函数封装
+		function move(obj, json, fn) {
+//			clearInterval(obj.timer);
+			obj.timer = setInterval(function() {
+				var flag = true;
+				for(var attr in json) {
+					var current = 0;
+					if(attr == "opacity") {
+						current = Math.round(parseInt(getStyle(obj, attr) * 100)) || 0;
+					} else {
+						current = parseInt(getStyle(obj, attr));
+					}
+
+					var step = (json[attr] - current) / 10;
+					step = step > 0 ? Math.ceil(step) : Math.floor(step);
+					if(attr == "opacity") {
+						if("opacity" in obj.style) {
+							obj.style.opacity = (current + step) / 100;
+						} else {
+							obj.style.filter = "alpha(opacity = " + (current + step) * 10 + "px";
+						}
+					} else if(attr == "zIndex") {
+						obj.style.zIndex = json[attr];
+					} else {
+						obj.style[attr] = (current + step) + "px";
+					}
+
+					if(current != json[attr]) {
+						flag = false;
+					}
+				}
+				if(flag) {
+					clearInterval(obj.timer)
+					if(fn) {
+						fn();
+					}
+				}
+			}, 30);
+
+		}
+
+		//获取样式值
+		function getStyle(obj, attr) {
+			if(obj.currentStyle) {
+				return obj.currentStyle[attr];
+			} else {
+				return window.getComputedStyle(obj, null)[attr];
+			}
+		}
+	</script>
+
 </html>
