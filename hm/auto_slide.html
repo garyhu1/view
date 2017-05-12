@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>无限向左循环</title>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			ul {
+				list-style: none;
+			}
+			
+			#box {
+				width: 600px;
+				height: 300px;
+				position: relative;
+				margin: 30px auto;
+			}
+			
+			.imglist {
+				position: relative;
+				overflow: hidden;
+				width: 600px;
+				height: 300px;
+				border: 1px solid black;
+				border-radius: 15px;
+			}
+			
+			.imglist li {
+				width: 600px;
+				height: 300px;
+				position: absolute;
+				top: 0;
+				left: 600;
+			}
+			
+			.imglist img {
+				width: 600px;
+				height: 300px;
+			}
+			
+			.numlist {
+				position: absolute;
+				right: 0;
+				bottom: 5px;
+			}
+			
+			.numlist li {
+				width: 30px;
+				height: 30px;
+				line-height: 30px;
+				text-align: center;
+				color: #fff;
+				background: darkmagenta;
+				border-radius: 50%;
+				margin-right: 5px;
+				float: left;
+				opacity: .7;
+				filter: alpha(opacity=70);
+				cursor: pointer;
+			}
+			
+			.numlist li.current {
+				font-weight: bold;
+				background: firebrick;
+				opacity: 100;
+				filter: alpha(opacity=100);
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="box">
+			<ul class="imglist">
+				<li><img src="../img/img11.jpg" /></li>
+				<li><img src="../img/img12.jpg" /></li>
+				<li><img src="../img/img13.jpg" /></li>
+				<li><img src="../img/img14.jpg" /></li>
+				<li><img src="../img/img15.jpg" /></li>
+				<li><img src="../img/img10.jpg" /></li>
+			</ul>
+			<ul class="numlist">
+				<li>1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+				<li>5</li>
+				<li>6</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript">
+		function runImg() {}
+		runImg.prototype = {
+			numlist: null,
+			imglist: null,
+			boxul: null,
+			prov: 0,
+			index: 0,
+			play: null,
+			timer: null,
+			box: null,
+			info: function(bigBox) {
+				this.box = bigBox;
+				this.boxul = this.box.getElementsByTagName("ul");
+				this.imglist = this.boxul[0].getElementsByTagName("li");
+				this.numlist = this.boxul[1].getElementsByTagName("li");
+				for(var i = 0; i < this.imglist.length; i++) {
+					this.move(i, 600);
+				}
+				this.move(0, 0);
+				this.numlist[0].className = "current";
+			},
+			move: function(a, b) {
+				this.imglist[a].style.left = b + "px";
+			},
+			action: function() {
+				this.autoplay();
+				this.mouseoverout(this.box, this.numlist);
+			},
+			autoplay: function() {
+				var that = this;
+				this.play = setInterval(function() {
+					that.prov = that.index;
+					that.index++;
+					if(that.index > that.imglist.length - 1) {
+						that.index = 0;
+					}
+					that.imgshow(that.index, that.imglist, that.numlist);
+				}, 2000);
+			},
+			imgshow: function(ind, imglist, numlist) {
+				this.index = ind;
+				var pro = 0;
+				var cur = 600;
+				clearInterval(this.timer);
+				for(var i = 0; i < imglist.length; i++) {
+					this.move(i, 600);
+				}
+				for(var j = 0; j < numlist.length; j++) {
+					numlist[j].className = "";
+				}
+				this.move(this.prov, pro);
+				this.move(ind, cur);
+				numlist[ind].className = "current";
+				var that = this;
+				this.timer = setInterval(function() {
+					pro -= 10;
+					cur -= 10;
+					if(pro < -600) {
+						pro = -600;
+					}
+					if(cur < 0) {
+						cur = 0;
+					}
+					that.move(that.prov, pro);
+					that.move(ind, cur);
+					if(pro == -600 && cur == 0) {
+						clearInterval(that.timer);
+					}
+				}, 10);
+
+			},
+			mouseoverout: function(box, numlist) {
+				var that = this;
+				box.onmouseover = function() {
+					clearInterval(that.play);
+				}
+				box.onmouseout = function() {
+					that.autoplay();
+				}
+				for(var i = 0; i < numlist.length; i++) {
+					numlist[i].index = i;
+					numlist[i].onmouseover = function() {
+						that.prov = that.index;
+						that.imgshow(this.index, that.imglist, numlist);
+					}
+				}
+			}
+		}
+		window.onload = function() {
+			var box = document.getElementById("box");
+			var runimg = new runImg();
+			runimg.info(box);
+			runimg.action();
+		}
+	</script>
+
+</html>
